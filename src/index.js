@@ -46,6 +46,8 @@ async function onFormSubmit(e) {
   }
 
   if (query.length < 3) {
+    clearGalleryInnerHTML();
+    startImgEl.classList.remove('hidden');
     notifyInfo('Please enter a more specific query.');
     return;
   }
@@ -66,7 +68,7 @@ async function onFormSubmit(e) {
 
 function onFormInput() {
   const isInputEmpty = formEl.elements.searchQuery.value.trim() === '';
-  
+
   if (!isInputEmpty) {
     searchButtonEl.removeAttribute('disabled');
     return;
