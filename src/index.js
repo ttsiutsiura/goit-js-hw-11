@@ -64,6 +64,11 @@ async function onFormSubmit(e) {
   if (data.totalHits < 40) {
     loadMoreButtonEl.classList.add('hidden');
   }
+
+  window.scroll({
+    top: 0,
+    behavior: 'smooth',
+  });
 }
 
 function onFormInput() {
