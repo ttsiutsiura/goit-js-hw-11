@@ -18,6 +18,8 @@ const lightbox = new SimpleLightbox('.gallery a', { navText: ['P', 'N'] });
 
 let page = null;
 let query = null;
+let totalHits = 0;
+let hitsRecieved = 0;
 
 async function onFormSubmit(e) {
   e.preventDefault();
@@ -31,6 +33,8 @@ async function onFormSubmit(e) {
   }
 
   page = 1;
+  totalHits = 0;
+  hitsRecieved = 0;
   query = formEl.elements.searchQuery.value.trim();
 
   const response = await fetchImages(query, page);
@@ -44,6 +48,9 @@ async function onFormSubmit(e) {
     startImgEl.classList.remove('hidden');
     return;
   }
+
+  totalHits = data.totalHits;
+  hitsRecieved += data.hits.length;
 
   if (query.length < 3) {
     clearGalleryInnerHTML();
@@ -89,13 +96,12 @@ async function onLoadMoreClick() {
     const response = await fetchImages(query, page);
     const data = response.data;
     renderMarkup(data);
+    hitsRecieved += data.hits.length;
   } catch (error) {
     console.log(error);
   }
 
-  const checkIfTheNextFetchReturnsError = await fetchImages(query, page + 1);
-
-  if (checkIfTheNextFetchReturnsError.data.hits.length === 0) {
+  if (totalHits === hitsRecieved) {
     loadMoreButtonEl.classList.add('hidden');
     notifyFailure("We're sorry, but you've reached the end of search results.");
   }
